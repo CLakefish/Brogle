@@ -21,10 +21,17 @@ GEN_SPARSE_SET_TYPE(Model, int);
 static struct ModelSystem {
 	SPModel models;
 	Shader* shader;
+
+	unsigned int viewLoc;
+	unsigned int projLoc;
 } ModelSystem;
 
-static inline void ModelSystem_Init(int pageSize, int initCapacity) {
+static inline void ModelSystem_Init(int pageSize, int initCapacity, Shader* shader) {
 	ModelSystem.models = SPModel_Init(pageSize, initCapacity);
+	ModelSystem.shader = shader;
+
+	ModelSystem.viewLoc = glGetUniformLocation(ModelSystem.shader->ID, "view");
+	ModelSystem.projLoc = glGetUniformLocation(ModelSystem.shader->ID, "proj");
 }
 
 static inline void ModelSystem_Add(Entity ID, Model* model) {
@@ -34,11 +41,8 @@ static inline void ModelSystem_Add(Entity ID, Model* model) {
 static inline void ModelSystem_Render(Matrix4x4* view, Matrix4x4* proj) {
 	ShaderUse(ModelSystem.shader);
 
-	unsigned int viewLoc = glGetUniformLocation(ModelSystem.shader->ID, "view");
-	glUniformMatrix4fv(viewLoc, 1, GL_TRUE, view);
-
-	unsigned int projLoc = glGetUniformLocation(ModelSystem.shader->ID, "proj");
-	glUniformMatrix4fv(projLoc, 1, GL_TRUE, proj);
+	glUniformMatrix4fv(ModelSystem.viewLoc, 1, GL_TRUE, view);
+	glUniformMatrix4fv(ModelSystem.projLoc, 1, GL_TRUE, proj);
 
 	for (int i = 0; i < ModelSystem.models.dense.count; ++i) {
 		Model m = ModelSystem.models.dense.data[i];

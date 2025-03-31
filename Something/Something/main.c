@@ -135,12 +135,9 @@ int main()
 	}
 
 	EntityManager_Init();
-	Gizmo_Init();
-	ModelSystem_Init(10, 100);
+	Gizmo_Init(ShaderInit(fileToString("line.vert"), fileToString("line.frag")));
+	ModelSystem_Init(10, 100, ShaderInit(fileToString("default.vert"), fileToString("default.frag")));
 	PhysicsSystem_Init(10, 100);
-
-	ModelSystem.shader  = ShaderInit(fileToString("default.vert"), fileToString("default.frag"));
-	GizmoManager.shader = ShaderInit(fileToString("line.vert"),    fileToString("line.frag"));
 
 	Gizmo_AddLine((Vector3) { -100, 0, 0 }, (Vector3) { 100, 0, 0 }, (Vector3) { 0, 0, 1 });
 	Gizmo_AddLine((Vector3) { 0, 0, -100 }, (Vector3) { 0, 0, 100 }, (Vector3) { 1, 0, 0 });

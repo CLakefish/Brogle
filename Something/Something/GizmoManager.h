@@ -23,7 +23,35 @@ static struct GizmoManager {
 	int gridInd;
 
 	Shader* shader;
+	unsigned int viewLoc;
+	unsigned int projLoc;
 } GizmoManager;
+
+static void Gizmo_Init(Shader* shader) {
+	DAPGizmoBox_Init(&GizmoManager.boxes, 2);
+	DAPGizmoLine_Init(&GizmoManager.lines, 2);
+
+	GizmoManager.shader = shader;
+	GizmoManager.viewLoc = glGetUniformLocation(GizmoManager.shader->ID, "view");
+	GizmoManager.projLoc = glGetUniformLocation(GizmoManager.shader->ID, "proj");
+
+	int cell = GRID_WIDTH * GRID_LENGTH;
+	int inds = cell * 4;
+
+	GizmoManager.gridInd = inds;
+	GizmoManager.gridVert = malloc(sizeof(GizmoVertex) * GizmoManager.gridInd);
+
+	glGenVertexArrays(1, &GizmoManager.gridVAO);
+	glBindVertexArray(GizmoManager.gridVAO);
+	glGenBuffers(1, &GizmoManager.gridVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, GizmoManager.gridVBO);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GizmoVertex), (void*)offsetof(GizmoVertex, position));
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GizmoVertex), (void*)offsetof(GizmoVertex, color));
+	glEnableVertexAttribArray(1);
+}
 
 static GizmoLine* Gizmo_GenGizmoLine(Vector3 a, Vector3 b, Vector3 color) {
 	GizmoLine* gizmo = (GizmoLine*)malloc(sizeof(GizmoLine));
@@ -49,28 +77,6 @@ static GizmoLine* Gizmo_GenGizmoLine(Vector3 a, Vector3 b, Vector3 color) {
 	glEnableVertexAttribArray(1);
 
 	return gizmo;
-}
-
-static void Gizmo_Init() {
-	DAPGizmoBox_Init (&GizmoManager.boxes, 2);
-	DAPGizmoLine_Init(&GizmoManager.lines, 2);
-
-	int cell = GRID_WIDTH * GRID_LENGTH;
-	int inds = cell * 4;
-
-	GizmoManager.gridInd  = inds;
-	GizmoManager.gridVert = malloc(sizeof(GizmoVertex) * GizmoManager.gridInd);
-
-	glGenVertexArrays(1, &GizmoManager.gridVAO);
-	glBindVertexArray(GizmoManager.gridVAO);
-	glGenBuffers(1, &GizmoManager.gridVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, GizmoManager.gridVBO);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GizmoVertex), (void*)offsetof(GizmoVertex, position));
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GizmoVertex), (void*)offsetof(GizmoVertex, color));
-	glEnableVertexAttribArray(1);
 }
 
 static void Gizmo_Free() {
@@ -270,11 +276,8 @@ static void Gizmo_BuildGrid(Vector3 pos) {
 static void Gizmo_RenderTop(Matrix4x4* view, Matrix4x4* proj, Vector3 pos) {
 	ShaderUse(GizmoManager.shader);
 
-	unsigned int viewLoc = glGetUniformLocation(GizmoManager.shader->ID, "view");
-	glUniformMatrix4fv(viewLoc, 1, GL_TRUE, view);
-
-	unsigned int projLoc = glGetUniformLocation(GizmoManager.shader->ID, "proj");
-	glUniformMatrix4fv(projLoc, 1, GL_TRUE, proj);
+	glUniformMatrix4fv(GizmoManager.viewLoc, 1, GL_TRUE, view);
+	glUniformMatrix4fv(GizmoManager.projLoc, 1, GL_TRUE, proj);
 
 	// Grid Rendering
 	Gizmo_BuildGrid(pos);
@@ -283,12 +286,14 @@ static void Gizmo_RenderTop(Matrix4x4* view, Matrix4x4* proj, Vector3 pos) {
 	glBindVertexArray(GizmoManager.gridVAO);
 	glDrawArrays(GL_LINES, 0, GizmoManager.gridInd);
 
+	// Box Rendering
 	for (int i = 0; i < GizmoManager.boxes.count; ++i)
 	{
 		glBindVertexArray(GizmoManager.boxes.data[i]->VAO);
 		glDrawArrays(GL_LINES, 0, 24);
 	}
 
+	// Line Rendering
 	glDisable(GL_DEPTH_TEST);
 
 	for (int i = 0; i < GizmoManager.lines.count; ++i)
