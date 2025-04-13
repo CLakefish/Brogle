@@ -157,9 +157,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\lib-vc2022\glad\glad.c" />
-    <ClCompile Include="EntityManager.c" />
     <ClCompile Include="FileIO.c" />
-    <ClCompile Include="GameEngine.c" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -168,8 +166,6 @@
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.c" />
-    <ClCompile Include="ModelSystem.c" />
-    <ClCompile Include="PhysicsSystem.c" />
     <ClCompile Include="Shader.c" />
     <ClCompile Include="TimeManager.c" />
     <ClCompile Include="WindowManager.c" />
@@ -179,10 +175,8 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DynamicArrayPtr.h" />
     <ClInclude Include="Entity.h" />
-    <ClInclude Include="EntityManager.h" />
     <ClInclude Include="FileIO.h" />
     <ClInclude Include="DynamicArray.h" />
-    <ClInclude Include="GameEngine.h" />
     <ClInclude Include="Gizmo.h" />
     <ClInclude Include="GizmoManager.h" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -203,6 +197,7 @@
     <ClInclude Include="Rigidbody.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SparseSet.h" />
+    <ClInclude Include="System.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Vertex.h" />

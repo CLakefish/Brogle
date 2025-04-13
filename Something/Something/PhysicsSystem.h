@@ -12,24 +12,62 @@
 GEN_SPARSE_SET_TYPE(Transform, int);
 GEN_SPARSE_SET_TYPE(Rigidbody, int);
 
-typedef struct PhysicsSystem {
+static struct PhysicsSystem {
 	SPRigidbody rigidbodies;
 	SPTransform transforms;
 } PhysicsSystem;
 
-inline void PhysicsSystem_Init				(PhysicsSystem* system, int pageSize, int initCapacity);
-inline void PhysicsSystem_Free				(PhysicsSystem* system);
+static void PhysicsSystem_Init(int pageSize, int initCapacity) {
+	PhysicsSystem.rigidbodies = SPRigidbody_Init(pageSize, initCapacity);
+	PhysicsSystem.transforms  = SPTransform_Init(pageSize, initCapacity);
+}
 
-void		PhysicsSystem_Load				(PhysicsSystem* system);
+static inline void PhysicsSystem_Load() {
+	// TO ADD
+}
 
-inline void PhysicsSystem_AddTransform		(PhysicsSystem* system, Entity ID, Transform* t);
-inline void PhysicsSystem_AddRigidbody		(PhysicsSystem* system, Entity ID, Rigidbody* t);
+static inline void PhysicsSystem_Free() {
+	SPRigidbody_Free(&PhysicsSystem.rigidbodies);
+	SPTransform_Free(&PhysicsSystem.transforms);
+}
 
-Transform*	PhysicsSystem_GetTransform		(PhysicsSystem* system, Entity ID);
-Rigidbody*	PhysicsSystem_GetRigidbody		(PhysicsSystem* system, Entity ID);
+static inline void PhysicsSystem_AddTransform(Entity ID, Transform* t) {
+	SPTransform_Insert(&PhysicsSystem.transforms, t, ID);
+}
 
-inline void PhysicsSystem_RemoveTransform	(PhysicsSystem* system, Entity ID);
-inline void PhysicsSystem_RemoveRigidbody	(PhysicsSystem* system, Entity ID);
-inline void PhysicsSystem_RemoveAll			(PhysicsSystem* system, Entity ID);
+static inline void PhysicsSystem_AddRigidbody(Entity ID, Rigidbody* t) {
+	SPRigidbody_Insert(&PhysicsSystem.rigidbodies, t, ID);
+}
+
+static inline Transform* PhysicsSystem_GetTransform(Entity ID) {
+	if (PhysicsSystem.transforms.dense.data == NULL) {
+		assert("PHYSICS SYSTEM TRANSFORM SET NOT INITIALIZED!");
+		return NULL;
+	}
+
+	return SPTransform_Get(&PhysicsSystem.transforms, ID);
+};
+
+static inline Rigidbody* PhysicsSystem_GetRigidbody(Entity ID) {
+	if (PhysicsSystem.rigidbodies.dense.data == NULL) {
+		assert("PHYSICS SYSTEM RIGIDBODY SET NOT INITIALIZED!");
+		return NULL;
+	}
+
+	return SPRigidbody_Get(&PhysicsSystem.rigidbodies, ID);
+};
+
+static inline void PhysicsSystem_RemoveTransform(Entity ID) {
+	SPTransform_Remove(&PhysicsSystem.transforms, ID);
+}
+
+static inline void PhysicsSystem_RemoveRigidbody(Entity ID) {
+	SPRigidbody_Remove(&PhysicsSystem.rigidbodies, ID);
+}
+
+static inline void PhysicsSystem_RemoveAll(Entity ID) {
+	PhysicsSystem_RemoveTransform(ID);
+	PhysicsSystem_RemoveRigidbody(ID);
+}
 
 #endif // !PHYSICS_SYSTEM

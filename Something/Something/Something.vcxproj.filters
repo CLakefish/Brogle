@@ -8,6 +8,9 @@
     <Filter Include="Source Files\Math">
       <UniqueIdentifier>{ab3f8392-1d78-46f5-9a57-d2edfe731461}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\IO">
+      <UniqueIdentifier>{a02f3cb1-8f7e-4403-9d6b-e3980813a69b}</UniqueIdentifier>
+    </Filter>
     <Filter Include="ECS">
       <UniqueIdentifier>{7ecbd08b-a7dd-4f6f-b65d-e5d6494bff10}</UniqueIdentifier>
     </Filter>
@@ -52,19 +55,10 @@
     <Filter Include="ECS\Components\Mesh">
       <UniqueIdentifier>{194a65b8-2d44-4970-a890-6fcde876134f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Data Structures">
-      <UniqueIdentifier>{e19fb708-5b17-418e-9cf7-d0065e250d15}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ECS\Components\Texture">
-      <UniqueIdentifier>{a02f3cb1-8f7e-4403-9d6b-e3980813a69b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ECS\Systems">
-      <UniqueIdentifier>{b5db9e9b-41d5-43b6-aacd-7f2dbfcd20ec}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileIO.c">
-      <Filter>ECS\Components\Texture</Filter>
+      <Filter>Source Files\IO</Filter>
     </ClCompile>
     <ClCompile Include="WindowManager.c">
       <Filter>Source Files\Game\Window</Filter>
@@ -102,25 +96,13 @@
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsSystem.c">
-      <Filter>ECS\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelSystem.c">
-      <Filter>ECS\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityManager.c">
-      <Filter>ECS</Filter>
-    </ClCompile>
-    <ClCompile Include="GameEngine.c">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vector3.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
     <ClInclude Include="FileIO.h">
-      <Filter>ECS\Components\Texture</Filter>
+      <Filter>Source Files\IO</Filter>
     </ClInclude>
     <ClInclude Include="Matrix4x4.h">
       <Filter>Source Files\Math</Filter>
@@ -129,6 +111,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Entity.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="System.h">
       <Filter>ECS</Filter>
     </ClInclude>
     <ClInclude Include="Math.h">
@@ -148,6 +133,9 @@
     </ClInclude>
     <ClInclude Include="..\src\include\stb_image.h">
       <Filter>Source Files\Dependencies</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicArray.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imgui.h">
       <Filter>Header Files\imgui</Filter>
@@ -176,10 +164,19 @@
     <ClInclude Include="imgui\imgui_impl_opengl3_loader.h">
       <Filter>Header Files\imgui</Filter>
     </ClInclude>
+    <ClInclude Include="SparseSet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="Rigidbody.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsSystem.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="Vertex.h">
@@ -191,35 +188,17 @@
     <ClInclude Include="MeshComponent.h">
       <Filter>ECS\Components\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="ModelSystem.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
     <ClInclude Include="Gizmo.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="GizmoManager.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="DynamicArray.h">
-      <Filter>Source Files\Data Structures</Filter>
-    </ClInclude>
     <ClInclude Include="DynamicArrayPtr.h">
-      <Filter>Source Files\Data Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="SparseSet.h">
-      <Filter>Source Files\Data Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="GameEngine.h">
-      <Filter>Source Files\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>ECS\Components\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelSystem.h">
-      <Filter>ECS\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsSystem.h">
-      <Filter>ECS\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityManager.h">
-      <Filter>ECS</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
