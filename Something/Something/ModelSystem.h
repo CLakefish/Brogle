@@ -18,7 +18,7 @@
 
 GEN_SPARSE_SET_TYPE(Model, int);
 
-static struct ModelSystem {
+typedef struct ModelSystem {
 	SPModel models;
 	Shader* shader;
 
@@ -26,49 +26,14 @@ static struct ModelSystem {
 	unsigned int projLoc;
 } ModelSystem;
 
-static inline void ModelSystem_Init(int pageSize, int initCapacity, Shader* shader) {
-	ModelSystem.models = SPModel_Init(pageSize, initCapacity);
-	ModelSystem.shader = shader;
+inline void ModelSystem_Init		(ModelSystem* system, int pageSize, int initCapacity, Shader* shader);
+void		ModelSystem_Free		(ModelSystem* system);
 
-	ModelSystem.viewLoc = glGetUniformLocation(ModelSystem.shader->ID, "view");
-	ModelSystem.projLoc = glGetUniformLocation(ModelSystem.shader->ID, "proj");
-}
+void		ModelSystem_Load		(ModelSystem* system);
 
-static inline void ModelSystem_Add(Entity ID, Model* model) {
-	SPModel_Insert(&ModelSystem.models, model, ID);
-}
+inline void ModelSystem_Add			(ModelSystem* system, Entity ID, Model* model);
+inline void ModelSystem_Remove		(ModelSystem* system, Entity ID);
 
-static inline void ModelSystem_Render(Matrix4x4* view, Matrix4x4* proj) {
-	ShaderUse(ModelSystem.shader);
-
-	glUniformMatrix4fv(ModelSystem.viewLoc, 1, GL_TRUE, view);
-	glUniformMatrix4fv(ModelSystem.projLoc, 1, GL_TRUE, proj);
-
-	for (int i = 0; i < ModelSystem.models.dense.count; ++i) {
-		Model m = ModelSystem.models.dense.data[i];
-		for (int j = 0; j < m.mesh.count; ++j) {
-			Mesh_Render(&m.mesh.data[j], PhysicsSystem_GetTransform(m.ID), ModelSystem.shader);
-		}
-	}
-}
-
-static inline void ModelSystem_Free() {
-	// Fix this?
-	for (int i = 0; i < ModelSystem.models.dense.count; ++i) {
-		int clearable = 1;
-
-		for (int j = 0; j < ModelSystem.models.dense.data[i].mesh.count; ++j)
-		{
-			Mesh_Free(&ModelSystem.models.dense.data[i].mesh.data[j], &clearable);
-		}
-
-		if (clearable) {
-			DAMesh_Free(&ModelSystem.models.dense.data[i].mesh);
-		}
-	}
-
-	SPModel_Free(&ModelSystem.models);
-	free(ModelSystem.shader);
-}
+void		ModelSystem_Render		(ModelSystem* system, Matrix4x4* view, Matrix4x4* proj);
 
 #endif // !MODEL_SYSTEM
