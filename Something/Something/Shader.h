@@ -15,8 +15,8 @@ Shader* ShaderInit(char* vertex, char* fragment);
 void	ShaderUse(Shader* shader);
 void	ShaderClear(Shader* shader);
 
-inline void ShaderSetBool(const Shader* shader, const char* name, const bool value);
-inline void ShaderSetInt(const Shader* shader, const char* name, const int value);
-inline void ShaderSetFloat(const Shader* shader, const char* name, const float value);
+void ShaderSetBool(const Shader* shader, const char* name, const bool value);
+void ShaderSetInt(const Shader* shader, const char* name, const int value);
+void ShaderSetFloat(const Shader* shader, const char* name, const float value);
 
 #endif // !SHADER

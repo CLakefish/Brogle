@@ -76,17 +76,17 @@ void ShaderClear(Shader* shader)
 	free(shader);
 }
 
-static inline void ShaderSetBool(const Shader* shader, const char* name, const bool value)
+void ShaderSetBool(const Shader* shader, const char* name, const bool value)
 {
 	glUniform1i(glGetUniformLocation(shader->ID, name), (int)value);
 }
 
-static inline void ShaderSetInt(const Shader* shader, const char* name, const int value)
+void ShaderSetInt(const Shader* shader, const char* name, const int value)
 {
 	glUniform1i(glGetUniformLocation(shader->ID, name), value);
 }
 
-static inline void ShaderSetFloat(const Shader* shader, const char* name, const float value)
+void ShaderSetFloat(const Shader* shader, const char* name, const float value)
 {
 	glUniform1f(glGetUniformLocation(shader->ID, name), value);
 }

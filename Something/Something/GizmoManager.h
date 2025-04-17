@@ -2,6 +2,7 @@
 
 #include "Shader.h"
 #include "Gizmo.h"
+#include "Vector3.h"
 
 #include <glad/glad.h>
 #include <assert.h>
@@ -9,14 +10,22 @@
 #ifndef GIZMO_MANAGER
 #define GIZMO_MANAGER
 
-#define GRID_WIDTH  75
-#define GRID_LENGTH 75
-#define GRID_SPACING 15.0f
+#define GRID_WIDTH		 75
+#define GRID_LENGTH		 75
+#define GRID_SPACING	 15.0f
 #define GRID_FOG_DROPOFF 400.0f
+
+typedef enum GizmoType {
+	GT_WORLD,
+	GT_OVERLAY,
+	GT_SCREEN,
+} GizmoType;
 
 static struct GizmoManager {
 	DAPGizmoBox  boxes;
-	DAPGizmoLine lines;
+	DAPGizmoLine worldLines;
+	DAPGizmoLine overlayLines;
+	DAPGizmoLine screenLines;
 
 	GLuint gridVBO, gridVAO;
 	GizmoVertex* gridVert;
@@ -29,7 +38,9 @@ static struct GizmoManager {
 
 static void Gizmo_Init(Shader* shader) {
 	DAPGizmoBox_Init(&GizmoManager.boxes, 2);
-	DAPGizmoLine_Init(&GizmoManager.lines, 2);
+	DAPGizmoLine_Init(&GizmoManager.worldLines, 2);
+	DAPGizmoLine_Init(&GizmoManager.overlayLines, 2);
+	DAPGizmoLine_Init(&GizmoManager.screenLines, 2);
 
 	GizmoManager.shader = shader;
 	GizmoManager.viewLoc = glGetUniformLocation(GizmoManager.shader->ID, "view");
@@ -39,7 +50,7 @@ static void Gizmo_Init(Shader* shader) {
 	int inds = cell * 4;
 
 	GizmoManager.gridInd = inds;
-	GizmoManager.gridVert = malloc(sizeof(GizmoVertex) * GizmoManager.gridInd);
+	GizmoManager.gridVert = (GizmoVertex*)malloc(sizeof(GizmoVertex) * GizmoManager.gridInd);
 
 	glGenVertexArrays(1, &GizmoManager.gridVAO);
 	glBindVertexArray(GizmoManager.gridVAO);
@@ -80,16 +91,35 @@ static GizmoLine* Gizmo_GenGizmoLine(Vector3 a, Vector3 b, Vector3 color) {
 }
 
 static void Gizmo_Free() {
-	DAPGizmoBox_Free (&GizmoManager.boxes);
-	DAPGizmoLine_Free(&GizmoManager.lines);
+	DAPGizmoBox_Free(&GizmoManager.boxes);
+	DAPGizmoLine_Free(&GizmoManager.worldLines);
+	DAPGizmoLine_Free(&GizmoManager.overlayLines);
+	DAPGizmoLine_Free(&GizmoManager.screenLines);
+
 	free(GizmoManager.gridVert);
 
 	ShaderClear(GizmoManager.shader);
 }
 
-static void Gizmo_AddLine(Vector3 a, Vector3 b, Vector3 color) {
+static GizmoLine* Gizmo_AddLine(Vector3 a, Vector3 b, Vector3 color, GizmoType type) {
 	GizmoLine* line = Gizmo_GenGizmoLine(a, b, color);
-	DAPGizmoLine_Push(&GizmoManager.lines, line);
+	
+	switch (type)
+	{
+		case GT_WORLD:
+			DAPGizmoLine_Push(&GizmoManager.worldLines, line);
+			break;
+
+		case GT_OVERLAY:
+			DAPGizmoLine_Push(&GizmoManager.overlayLines, line);
+			break;
+
+		case GT_SCREEN:
+			DAPGizmoLine_Push(&GizmoManager.screenLines, line);
+			break;
+	}
+
+	return line;
 }
 
 static GizmoBox* Gizmo_AddBox(Vector3 position, Vector3 scale, Vector3 color) {
@@ -231,7 +261,7 @@ static void Gizmo_BuildGrid(Vector3 pos) {
 	float xOffset = (int)(pos.x / GRID_SPACING) * GRID_SPACING;
 	float zOffset = (int)(pos.z / GRID_SPACING) * GRID_SPACING;
 
-	int halfWidth  = GRID_WIDTH / 2.0f;
+	int halfWidth = GRID_WIDTH / 2.0f;
 	int halfLength = GRID_LENGTH / 2.0f;
 
 	Vector3 aZ, bZ, aX, bX;
@@ -246,8 +276,8 @@ static void Gizmo_BuildGrid(Vector3 pos) {
 			Vector3 colorA = (Vector3){ 0.5f, 0.5f, 0.5f, 1.0f - (vec3_Distance(vec3_Multiply(pos, -1), aZ) / GRID_FOG_DROPOFF) };
 			Vector3 colorB = (Vector3){ 0.5f, 0.5f, 0.5f, 1.0f - (vec3_Distance(vec3_Multiply(pos, -1), aZ) / GRID_FOG_DROPOFF) };
 
-			GizmoManager.gridVert[index++] = (GizmoVertex){aZ, colorA };
-			GizmoManager.gridVert[index++] = (GizmoVertex){bZ, colorB };
+			GizmoManager.gridVert[index++] = (GizmoVertex){ aZ, colorA };
+			GizmoManager.gridVert[index++] = (GizmoVertex){ bZ, colorB };
 
 			aX = (Vector3){ (x * GRID_SPACING) - xOffset,	    0, (z * GRID_SPACING) - zOffset };
 			bX = (Vector3){ ((x + 1) * GRID_SPACING) - xOffset, 0, (z * GRID_SPACING) - zOffset };
@@ -257,7 +287,7 @@ static void Gizmo_BuildGrid(Vector3 pos) {
 		}
 	}
 
-	aZ = (Vector3){ (halfWidth * GRID_SPACING) - xOffset,  0, (halfLength * GRID_SPACING) - zOffset };
+	aZ = (Vector3){ ( halfWidth * GRID_SPACING) - xOffset, 0, (halfLength * GRID_SPACING) - zOffset };
 	bZ = (Vector3){ (-halfWidth * GRID_SPACING) - xOffset, 0, (halfLength * GRID_SPACING) - zOffset };
 
 	Vector3 colorA = (Vector3){ 0.5f, 0.5f, 0.5f, 1.0f - (vec3_Distance(vec3_Multiply(pos, -1), aZ) / GRID_FOG_DROPOFF) };
@@ -267,20 +297,21 @@ static void Gizmo_BuildGrid(Vector3 pos) {
 	GizmoManager.gridVert[index++] = (GizmoVertex){ bZ, colorB };
 
 	aX = (Vector3){ (halfWidth * GRID_SPACING) - xOffset, 0, (-halfLength * GRID_SPACING) - zOffset };
-	bX = (Vector3){ (halfWidth * GRID_SPACING) - xOffset, 0, (halfLength * GRID_SPACING)  - zOffset };
+	bX = (Vector3){ (halfWidth * GRID_SPACING) - xOffset, 0, (halfLength * GRID_SPACING) - zOffset };
 
 	GizmoManager.gridVert[index++] = (GizmoVertex){ aX, colorA };
 	GizmoManager.gridVert[index++] = (GizmoVertex){ bX, colorB };
 }
 
-static void Gizmo_RenderTop(Matrix4x4* view, Matrix4x4* proj, Vector3 pos) {
+static void Gizmo_Render(Matrix4x4* view, Matrix4x4* proj, Vector3 pos) {
 	ShaderUse(GizmoManager.shader);
 
 	glUniformMatrix4fv(GizmoManager.viewLoc, 1, GL_TRUE, view);
 	glUniformMatrix4fv(GizmoManager.projLoc, 1, GL_TRUE, proj);
 
 	// Grid Rendering
-	Gizmo_BuildGrid(pos);
+	Gizmo_BuildGrid((Vector3) {-pos.x, pos.y, -pos.z});
+
 	glBindBuffer(GL_ARRAY_BUFFER, GizmoManager.gridVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GizmoVertex) * GizmoManager.gridInd, GizmoManager.gridVert, GL_DYNAMIC_DRAW);
 	glBindVertexArray(GizmoManager.gridVAO);
@@ -293,12 +324,31 @@ static void Gizmo_RenderTop(Matrix4x4* view, Matrix4x4* proj, Vector3 pos) {
 		glDrawArrays(GL_LINES, 0, 24);
 	}
 
+	for (int i = 0; i < GizmoManager.worldLines.count; ++i)
+	{
+		glBindVertexArray(GizmoManager.worldLines.data[i]->VAO);
+		glDrawArrays(GL_LINES, 0, 2);
+	}
+
 	// Line Rendering
 	glDisable(GL_DEPTH_TEST);
 
-	for (int i = 0; i < GizmoManager.lines.count; ++i)
+	for (int i = 0; i < GizmoManager.overlayLines.count; ++i)
 	{
-		glBindVertexArray(GizmoManager.lines.data[i]->VAO);
+		glBindVertexArray(GizmoManager.overlayLines.data[i]->VAO);
+		glDrawArrays(GL_LINES, 0, 2);
+	}
+
+	Matrix4x4 id = mat_Identity();
+	glUniformMatrix4fv(GizmoManager.viewLoc, 1, GL_TRUE, &id);
+	glUniformMatrix4fv(GizmoManager.projLoc, 1, GL_TRUE, &id);
+
+	for (int i = 0; i < GizmoManager.screenLines.count; ++i)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, GizmoManager.screenLines.data[i]->VBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GizmoLine), GizmoManager.screenLines.data[i]);
+
+		glBindVertexArray(GizmoManager.screenLines.data[i]->VAO);
 		glDrawArrays(GL_LINES, 0, 2);
 	}
 

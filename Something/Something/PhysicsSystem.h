@@ -17,19 +17,19 @@ typedef struct PhysicsSystem {
 	SPTransform transforms;
 } PhysicsSystem;
 
-inline void PhysicsSystem_Init				(PhysicsSystem* system, int pageSize, int initCapacity);
-inline void PhysicsSystem_Free				(PhysicsSystem* system);
+void		PhysicsSystem_Init				(PhysicsSystem* system, int pageSize, int initCapacity);
+void		PhysicsSystem_Free				(PhysicsSystem* system);
 
 void		PhysicsSystem_Load				(PhysicsSystem* system);
 
-inline void PhysicsSystem_AddTransform		(PhysicsSystem* system, Entity ID, Transform* t);
-inline void PhysicsSystem_AddRigidbody		(PhysicsSystem* system, Entity ID, Rigidbody* t);
+void		PhysicsSystem_AddTransform		(PhysicsSystem* system, Entity ID, Transform* t);
+void		PhysicsSystem_AddRigidbody		(PhysicsSystem* system, Entity ID, Rigidbody* t);
 
 Transform*	PhysicsSystem_GetTransform		(PhysicsSystem* system, Entity ID);
 Rigidbody*	PhysicsSystem_GetRigidbody		(PhysicsSystem* system, Entity ID);
 
-inline void PhysicsSystem_RemoveTransform	(PhysicsSystem* system, Entity ID);
-inline void PhysicsSystem_RemoveRigidbody	(PhysicsSystem* system, Entity ID);
-inline void PhysicsSystem_RemoveAll			(PhysicsSystem* system, Entity ID);
+void		PhysicsSystem_RemoveTransform	(PhysicsSystem* system, Entity ID);
+void		PhysicsSystem_RemoveRigidbody	(PhysicsSystem* system, Entity ID);
+void		PhysicsSystem_RemoveAll			(PhysicsSystem* system, Entity ID);
 
 #endif // !PHYSICS_SYSTEM

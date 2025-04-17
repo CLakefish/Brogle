@@ -7,6 +7,8 @@
 #include "Vector3.h"
 #include "MeshComponent.h"
 
+#include <Windows.h>
+
 #ifndef MODEL
 #define MODEL
 

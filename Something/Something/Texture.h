@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <string.h>
+
 #include "stb_image.h"
 
 #ifndef TEXTURE

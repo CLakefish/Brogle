@@ -26,9 +26,6 @@
     <Filter Include="Source Files\Game\Shader">
       <UniqueIdentifier>{405b8653-5a1f-4c6c-b05e-67c58d2f9f5b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Dependencies\imgui">
-      <UniqueIdentifier>{b39c3ed2-9f86-4967-9d66-295a70b77f49}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -42,9 +39,6 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Header Files\imgui">
-      <UniqueIdentifier>{77891d8d-75d9-4776-9654-ceff4a955fe1}</UniqueIdentifier>
     </Filter>
     <Filter Include="ECS\Components">
       <UniqueIdentifier>{784cdf8f-7f8e-44ef-8cc9-a7fbdbbd2252}</UniqueIdentifier>
@@ -61,6 +55,12 @@
     <Filter Include="ECS\Systems">
       <UniqueIdentifier>{b5db9e9b-41d5-43b6-aacd-7f2dbfcd20ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Dependencies\imgui">
+      <UniqueIdentifier>{d135f4aa-1565-4e4c-902a-5d3c883e804d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Framebuffer">
+      <UniqueIdentifier>{655ab66f-b662-4d55-8a2b-77c35962114c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileIO.c">
@@ -75,7 +75,25 @@
     <ClCompile Include="Shader.c">
       <Filter>Source Files\Game\Shader</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\lib-vc2022\glad\glad.c">
+    <ClCompile Include="main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsSystem.c">
+      <Filter>ECS\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelSystem.c">
+      <Filter>ECS\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="EntitySystem.c">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEngine.c">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glad.c">
       <Filter>Source Files\Dependencies</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
@@ -90,29 +108,14 @@
     <ClCompile Include="imgui\imgui_impl_glfw.cpp">
       <Filter>Source Files\Dependencies\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_opengl3.cpp">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClCompile>
     <ClCompile Include="imgui\imgui_tables.cpp">
       <Filter>Source Files\Dependencies\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_widgets.cpp">
       <Filter>Source Files\Dependencies\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_impl_opengl3.cpp">
-      <Filter>Source Files\Dependencies\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="main.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsSystem.c">
-      <Filter>ECS\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelSystem.c">
-      <Filter>ECS\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityManager.c">
-      <Filter>ECS</Filter>
-    </ClCompile>
-    <ClCompile Include="GameEngine.c">
-      <Filter>Source Files\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -145,36 +148,6 @@
     </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>Source Files\Game\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\include\stb_image.h">
-      <Filter>Source Files\Dependencies</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_internal.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imstb_rectpack.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imstb_textedit.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imstb_truetype.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_impl_glfw.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imconfig.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_impl_opengl3.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_impl_opengl3_loader.h">
-      <Filter>Header Files\imgui</Filter>
     </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>ECS\Components</Filter>
@@ -218,8 +191,41 @@
     <ClInclude Include="PhysicsSystem.h">
       <Filter>ECS\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="EntityManager.h">
+    <ClInclude Include="EntitySystem.h">
       <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiTest.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Source Files\Dependencies</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_truetype.h">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui.h">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_glfw.h">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_opengl3.h">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_opengl3_loader.h">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_internal.h">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_rectpack.h">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_textedit.h">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imconfig.h">
+      <Filter>Source Files\Dependencies\imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -234,6 +240,12 @@
     </None>
     <None Include="default.vert">
       <Filter>Shaders\Main</Filter>
+    </None>
+    <None Include="framebuffer.frag">
+      <Filter>Shaders\Framebuffer</Filter>
+    </None>
+    <None Include="framebuffer.vert">
+      <Filter>Shaders\Framebuffer</Filter>
     </None>
   </ItemGroup>
 </Project>
