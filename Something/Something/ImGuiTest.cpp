@@ -21,26 +21,32 @@ extern "C" {
 		ImGui_ImplOpenGL3_Init();
 	}
 
-	void ImGui_Render(unsigned int fboTex, unsigned int w, unsigned int h) {
+	void ImGui_Render(unsigned int fboTex, unsigned int w, unsigned int h, int* outW, int* outH) {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
 		// https://www.youtube.com/watch?v=wK2Qr8Yl6og
-		ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+		ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
 
 		// if (show_demo_window) ImGui::ShowDemoWindow(&show_demo_window);
 
-		ImGui::Begin("FBO Preview");
+		ImGui::Begin("FBO Preview", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
 		ImVec2 panelSize = ImGui::GetContentRegionAvail();
+
+		ImGui::Image((ImTextureID)fboTex, ImVec2{ (float)w, (float)h }, ImVec2{0,1}, ImVec2{ 1, 0});
+
+		*outW = (int)panelSize.x;
+		*outH = (int)panelSize.y;
+
 		ImGui::End();
-		
-		if ()
 
 		ImGui::Begin("Hello");
-
 		ImGui::Text("Hello, World!");
+		ImGui::End();
 
+		ImGui::Begin("Hello2");
+		ImGui::Text("Hello2, World!");
 		ImGui::End();
 
 		ImGui::Render();

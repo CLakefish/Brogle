@@ -11,7 +11,7 @@ extern "C" {
 #endif
 
 	void ImGui_LoadGUI(GLFWwindow* wind);
-	void ImGui_Render(unsigned int fboTex, unsigned int w, unsigned int h);
+	void ImGui_Render(unsigned int fboTex, unsigned int w, unsigned int h, int* outW, int* outH);
 	void ImGui_ClearGUI(void);
 
 #ifdef __cplusplus

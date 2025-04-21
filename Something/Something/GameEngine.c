@@ -202,7 +202,7 @@ void Engine_Run(void) {
 		processInput(main->window, &Engine.cam);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-		glViewport(0, 0, 1920, 1080);
+		glViewport(0, 0, texW, texH);
 		glClearColor(0, 0, 0, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -222,7 +222,21 @@ void Engine_Run(void) {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, main->scale.x, main->scale.y);
 
-		ImGui_Render(tex, texW, texH);
+		int cW, cH;
+		ImGui_Render(tex, texW, texH, &cW, &cH);
+
+		if (cW != texW || cH != texH) {
+			texW = cW;
+			texH = cH;
+
+			glBindTexture(GL_TEXTURE_2D, tex);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texW, texH, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+			// resize RBO
+			glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, texW, texH);
+			// update your projection matrix’s aspect:
+			proj = mat_Perspective(90.0f * DEG2RAD, texW / (float)texH, 0.1f, 1000.0f);
+		}
 
 		glfwSwapBuffers(main->window);
 		glfwPollEvents();
