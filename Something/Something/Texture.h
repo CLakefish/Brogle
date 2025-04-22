@@ -38,6 +38,11 @@ static Texture Texture_Init(const char* fileName) {
 		type = delim + 1;
 	}
 
+	if (type == NULL) {
+		exit(1);
+		return;
+	}
+
 	unsigned int format = GL_RGB;
 
 	switch (type[0])
